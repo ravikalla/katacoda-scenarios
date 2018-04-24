@@ -2,10 +2,18 @@
   "title": "Online Bank",
   "description": "Online Bank application deployment in Docker",
   "difficulty": "beginner",
-  "time": "2 minutes",
+  "time": "5 minutes",
   "details": {
     "steps": [{
-      "title": "Step 1 - Run Command",
+      "title": "Step 1 - Start MySQL Database on Docker",
+      "text": "step1.md"
+    },
+    {
+      "title": "Step 2 - Dowload application code and execute SQL scripts",
+      "text": "step1.md"
+    },
+    {
+      "title": "Step 3 - Start the application on Docker",
       "text": "step1.md"
     }],
     "intro": {
