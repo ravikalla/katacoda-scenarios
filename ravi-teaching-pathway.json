@@ -4,10 +4,10 @@
   "paid": false,
   "courses": [
     {
-      "title": "Launching Containers",
-      "description": "Learn how to launch containers using docker",
+      "title": "Online Bank Application",
+      "description": "Learn how to deploy Online-Bank application easily on Docker",
       "course_id": "launching-containers",
-      "pathway_id": "docker",
+      "pathway_id": "hello-world",
       "id": "1"
     },
     {
