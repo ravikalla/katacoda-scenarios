@@ -1,0 +1,20 @@
+{
+  "title": "Ravi Projects Workshop",
+  "description": "Explination of various projects on BDD, Microservices etc. explained here",
+  "paid": false,
+  "courses": [
+    {
+      "title": "Launching Containers",
+      "description": "Learn how to launch containers using docker",
+      "course_id": "launching-containers",
+      "pathway_id": "docker",
+      "id": "1"
+    },
+    {
+      "title": "Deploying ASP.NET Core as Docker Container",
+      "description": "Learn how to deploy ASP.NET Core inside a Docker Container",
+      "course_id": "deploying-aspnet-core-as-docker-container",
+      "pathway_id": "dotnet-in-docker",
+      "id": "deploying-aspnet-core-as-docker-container"
+    }  ]
+}
