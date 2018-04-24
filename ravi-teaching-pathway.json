@@ -6,9 +6,9 @@
     {
       "title": "Online Bank Application",
       "description": "Learn how to deploy Online-Bank application easily on Docker",
-      "course_id": "launching-containers",
+      "course_id": "online-bank",
       "pathway_id": "hello-world",
-      "id": "1"
+      "id": "online-bank"
     },
     {
       "title": "Deploying ASP.NET Core as Docker Container",
