@@ -1,1 +1,1 @@
-You've completed your first Katacoda scenario!
+You've completed your Online Bank deployment tutorial!
