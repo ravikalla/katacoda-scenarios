@@ -1,5 +1,3 @@
-## Start the application using its Docker Image from DockerHub -
-
 Run the application on Docker -
 
 `docker run --detach -p 8888:8888 --link bankmysql:localhost -t ravikalla/online-bank:latest`{{execute}}
