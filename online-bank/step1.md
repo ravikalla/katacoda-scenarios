@@ -1,3 +1,6 @@
+
+DB Setup is done here
+
 ### Steps to start SQL Server:
 
 * Start "MySQL" database on Docker
