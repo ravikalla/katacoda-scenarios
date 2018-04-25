@@ -1,5 +1,3 @@
-## Execute SQL scripts on DB
-
 * Download the application code that has SQL scripts in it -
 `git clone https://github.com/ravikalla/online-bank.git`{{execute}}
 
