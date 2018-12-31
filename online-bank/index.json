@@ -5,7 +5,7 @@
   "time": "5 minutes",
   "details": {
     "steps": [{
-      "title": "Step 1 - Start MySQL Database on Docker",
+      "title": "Step 1 - Start MySQL Database on Docker.",
       "text": "step1.md"
     },
     {
