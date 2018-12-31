@@ -1,0 +1,39 @@
+{
+  "title": "BDD Spring - Online Bank",
+  "description": "Behaviour Driven Development - Online Bank Example",
+  "difficulty": "beginner",
+  "time": "15 minutes",
+  "details": {
+    "steps": [{
+      "title": "Step 1 - Start MySQL Database on Docker.",
+      "text": "step1.md"
+    },
+    {
+      "title": "Step 2 - Dowload application code and execute SQL scripts",
+      "text": "step2.md"
+    },
+    {
+      "title": "Step 3 - Start the application on Docker",
+      "text": "step3.md"
+    }],
+    "intro": {
+      "text": "intro.md",
+      "credits": ""
+    },
+    "finish": {
+      "text": "finish.md"
+    }
+  },
+  "environment": {
+    "uilayout": "editor",
+    "uisettings": "makefile",
+    "uimessage1": "\u001b[32mYour Interactive Bash Terminal. A safe place to learn and execute commands.\u001b[m\r\n"
+  },
+  "environment": {
+    "uilayout": "terminal",
+    "uimessage1": "\u001b[32mYour Interactive Bash Terminal.\r\nStart Kubernetes using `launch.sh`\u001b[m\r\n"
+  },
+  "backend": {
+    "imageid": "java8"
+  }
+}
