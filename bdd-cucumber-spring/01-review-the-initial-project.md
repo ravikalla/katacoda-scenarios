@@ -54,7 +54,7 @@ To add Spring JMS to our project all we have to do is to add the following line 
  Start the application
 ``java -jar bdd-cucumber-spring-0.0.1-SNAPSHOT.jar``{{execute}}
 
-Open the application: https://[[HOST_SUBDOMAIN]]-8888-[[KATACODA_HOST]].environments.katacoda.com/
+Open the application: https://[[HOST_SUBDOMAIN]]-8080-[[KATACODA_HOST]].environments.katacoda.com/
 
 * Login with the default credentials "Admin/password"
 
