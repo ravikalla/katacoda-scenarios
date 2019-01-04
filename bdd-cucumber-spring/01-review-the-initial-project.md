@@ -41,16 +41,17 @@ To add Spring JMS to our project all we have to do is to add the following line 
 
 **2. Test**
 
-``mvn clean install``{{execute}}
+``mvn test``{{execute}}
 
 **2. Build**
 
 ``mvn clean install``{{execute}}
 
 **3. Start**
-
+Navigate to the executable folder
 ``cd target``{{execute}}
-<br/>
+
+Start the application
 ``java -jar bdd-cucumber-spring-0.0.1-SNAPSHOT.jar``{{execute}}
 
 Open the application: https://[[HOST_SUBDOMAIN]]-8888-[[KATACODA_HOST]].environments.katacoda.com/
