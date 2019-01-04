@@ -7,7 +7,7 @@ As you review the content, you will notice that there are a lot of **TODO** comm
 **1. Add BDD Dependencies**
 
 To add Spring JMS to our project all we have to do is to add the following line in ``pom.xml``{{open}}
-<pre class="file" data-filename="pom.xml" data-target="insert" data-marker="<!-- TODO : Add cucumber dependency here -->
+<pre class="file" data-filename="pom.xml" data-target="insert" data-marker="<!-- TODO : Add cucumber dependency here -->">
 		&lt;dependency&gt;
 			&lt;groupId&gt;info.cukes&lt;/groupId&gt;
 			&lt;artifactId&gt;cucumber-java&lt;/artifactId&gt;
