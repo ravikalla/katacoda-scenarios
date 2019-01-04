@@ -53,6 +53,14 @@ To add Spring JMS to our project all we have to do is to add the following line 
 <br/>
 ``java -jar bdd-cucumber-spring-0.0.1-SNAPSHOT.jar``{{execute}}
 
+Open the application: https://[[HOST_SUBDOMAIN]]-8888-[[KATACODA_HOST]].environments.katacoda.com/
+
+* Login with the default credentials "Admin/password"
+
+
+
+
+
 To add Spring JMS to our project all we have to do is to add the following line in ``pom.xml``{{open}}
 
 Along with the JMS dependencies this starter also brings in the ActiveMQ Broker. The Broker manages connections to the Queue and acts as the mediator between the application and ActiveMQ. The `jackson-databind` dependency is for marshalling and unmarshalling the messages we will send. We will cover this later.
