@@ -1,4 +1,5 @@
 #!/bin/bash
-cd /root/projects/bdd-cucumber-spring-katacoda
+cd /root/projects/
+git clone https://github.com/ravikalla/bdd-cucumber-spring-katacoda.git
+cd /root/projects/bdd-cucumber-spring-katacoda/
 #~/.launch.sh
-
