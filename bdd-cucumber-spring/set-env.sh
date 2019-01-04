@@ -1,4 +1,4 @@
 #!/bin/bash
-cd /root/projects/temp
+cd /home/scrapbook/tutorial/temp
 #~/.launch.sh
 

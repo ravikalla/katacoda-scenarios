@@ -1,3 +1,7 @@
+Continuous Testing very important for Continuous Delivery.
+
+
+
 # Create JMS Message Listeners
 
 The Java Message Service (JMS) is a standard designed to allow applications to create, send, and receive Messages to form loosely coupled asynchronous components. Messaging between components is typically asynchronous and is a very common pattern in distributed systems. 
