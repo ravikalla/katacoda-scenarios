@@ -39,6 +39,10 @@ To add Spring JMS to our project all we have to do is to add the following line 
 		&lt;/dependency&gt;
 </pre>
 
+**2. Test**
+
+``mvn clean install``{{execute}}
+
 **2. Build**
 
 ``mvn clean install``{{execute}}
