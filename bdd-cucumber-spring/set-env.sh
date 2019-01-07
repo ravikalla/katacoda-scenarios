@@ -5,4 +5,6 @@ cd /root/projects/bdd-cucumber-spring-katacoda/
 
 sudo apt update
 sudo apt --yes --force-yes install nginx
+
+clear scr
 #~/.launch.sh
