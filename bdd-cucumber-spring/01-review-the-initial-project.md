@@ -41,13 +41,16 @@ To add Spring JMS to our project all we have to do is to add the following line 
 
 **2. Test**
 
+Execute tests
 ``mvn test``{{execute}}
-
-**2. Build**
+<br/><br/>
+Host reports on server to view
+``cp /root/projects/bdd-cucumber-spring-katacoda/target/extent-report.html /var/www/html/index.html``{{execute}}
+**3. Build**
 
 ``mvn clean install``{{execute}}
 
-**3. Start**
+**4. Start**
  Navigate to the executable folder
 ``cd target``{{execute}}
 
