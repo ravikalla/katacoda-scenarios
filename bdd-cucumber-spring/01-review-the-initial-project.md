@@ -664,7 +664,7 @@ Execute tests
 Host reports on server to view
 ``cp /root/projects/bdd-cucumber-spring-katacoda/target/extent-report.html /var/www/html/index.html``{{execute}}
 <br/>
-View test report: https://[[HOST_SUBDOMAIN]]-8080-[[KATACODA_HOST]].environments.katacoda.com/
+View test report: https://[[HOST_SUBDOMAIN]]-80-[[KATACODA_HOST]].environments.katacoda.com/
 
 **3. Build**
 
