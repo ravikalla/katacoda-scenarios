@@ -120,9 +120,9 @@ public class BDDTest {
 
 **1.2. Add Checkings Account Feature File**
 
-``src/test/resources/features/CheckingsAccountActivities1.feature``{{open}}
+``src/test/resources/features/CheckingsAccountActivities.feature``{{open}}
 
-<pre class="file" data-filename="src/test/resources/features/CheckingsAccountActivities1.feature" data-target="replace">
+<pre class="file" data-filename="src/test/resources/features/CheckingsAccountActivities.feature" data-target="replace">
 Feature: Check money deposited can be withdrawn from Checkings account in all possible cases
 
 @Regression
@@ -163,9 +163,669 @@ Scenario Outline: Check if huge amounts of money can be deposited and withdrawn 
 		|InitialBalance|DepositAmount   |RemainingAmount    |WithdrawAmount     |
 		|-500.00       |1000            |500.00             |0.00               |
 		|500.00        |1000000000000000|1000000000000500.00|1000000000000500.00|
-
 </pre>
 
+**1.3. Add Checkings Account StepDefinition File**
+
+``src/test/java/in/ravikalla/onlineacc/stepdef/DepositCheckCheckAccStep.java``{{open}}
+
+<pre class="file" data-filename="src/test/java/in/ravikalla/onlineacc/stepdef/DepositCheckCheckAccStep.java" data-target="replace">
+package in.ravikalla.onlineacc.stepdef;
+
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.user;
+import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.model;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.view;
+
+import java.io.IOException;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.junit.Assert;
+import org.mockito.MockitoAnnotations;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.test.IntegrationTest;
+import org.springframework.boot.test.SpringApplicationContextLoader;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.TestPropertySource;
+import org.springframework.test.context.web.WebAppConfiguration;
+import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.MvcResult;
+import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+import org.springframework.web.context.WebApplicationContext;
+
+import com.jayway.restassured.RestAssured;
+
+import cucumber.api.java.Before;
+import cucumber.api.java8.En;
+import in.ravikalla.onlineacc.StartApplication;
+import in.ravikalla.onlineacc.domain.PrimaryAccount;
+import in.ravikalla.onlineacc.utils.UserType;
+
+import static in.ravikalla.onlineacc.util.AppConstants.*;
+
+@SuppressWarnings("deprecation")
+@ContextConfiguration(classes = { StartApplication.class }, loader = SpringApplicationContextLoader.class)
+@WebAppConfiguration
+@IntegrationTest("server.port:0")
+@TestPropertySource("/application.yml")
+public class DepositCheckCheckAccStep implements En {
+
+	@Autowired
+	WebApplicationContext context;
+
+	MockMvc mockMvc;
+
+	private static final Logger L = LogManager.getLogger(DepositCheckCheckAccStep.class);
+
+	@Value("${local.server.port}")
+	private int port;
+
+	// Start : Global variables used while testing
+	private UserType enumUserType = null;
+	// End : Global variables used while testing
+
+	@Before
+	public void setup() throws IOException {
+		L.debug("Start : DepositCheckCheckAccStep.setUp()");
+
+		MockitoAnnotations.initMocks(this);
+		RestAssured.port = port;
+
+		enumUserType = UserType.COMMON;
+
+		mockMvc = MockMvcBuilders.webAppContextSetup(context).apply(springSecurity()).build();
+		L.debug("End : DepositCheckCheckAccStep.setUp()");
+	}
+
+	public DepositCheckCheckAccStep() {
+
+		Given("^Common user logged in$", () -&gt; {
+			L.debug("Start : User logged in");
+
+			enumUserType = UserType.COMMON;
+
+			L.debug("End : User logged in");
+		});
+		And("^Initial balance in Checkings account is ([^\"]*)$", (String strInitialBalance) -&gt; {
+			L.debug("Start : Intial balance match");
+			try {
+				PrimaryAccount objPrimaryAccount = getPrimaryAccountDetails();
+				Assert.assertEquals("Account Balance should match", strInitialBalance, objPrimaryAccount.getAccountBalance().toPlainString());
+			} catch (Exception e) {
+				Assert.fail("132 : Couldnt check the initial balance : " + e);
+			}
+			L.debug("End : Intial balance match");
+		});
+		When("^Deposit money of ([^\"]*) dollars in CheckingsAccount$", (String strDepositMoney) -&gt; {
+			L.debug("Start : Deposit money");
+			try {
+				mockMvc.perform(post(URI_ACC + URI_DEPOSIT).param("amount", strDepositMoney).param("accountType", "Primary")
+						.with(user(enumUserType.getUserName()).password(enumUserType.getPWD())))
+					.andExpect(status().is3xxRedirection());
+			} catch (Exception e) {
+				Assert.fail("143 : Deposit Money : " + e);
+			}
+			L.debug("End : Deposit money");
+		});
+		And("^Withdraw money of ([^\"]*) dollars from CheckingsAccount$", (String strWithdrawMoney) -&gt; {
+			L.debug("Start : Withdraw money");
+			try {
+				mockMvc.perform(post(URI_ACC + URI_WITHDRAW).param("amount", strWithdrawMoney).param("accountType", "Primary")
+						.with(user(enumUserType.getUserName()).password(enumUserType.getPWD()))).andExpect(status().is3xxRedirection());
+			} catch (Exception e) {
+				Assert.fail("153 : Withdraw Money : " + e);
+			}
+			L.debug("End : Withdraw money");
+		});
+		And("^Check remaining amount ([^\"]*) dollars in CheckingsAccount$", (String strRemainingAmount) -&gt; {
+			L.debug("Start : Remaining balance match");
+			try {
+				PrimaryAccount objPrimaryAccount = getPrimaryAccountDetails();
+				Assert.assertEquals("Account Balance should match", strRemainingAmount, objPrimaryAccount.getAccountBalance().toPlainString());
+			} catch (Exception e) {
+				Assert.fail("132 : Couldnt check the initial balance : " + e);
+			}
+			L.debug("End : Remaining balance match");
+		});
+	}
+
+	private PrimaryAccount getPrimaryAccountDetails() throws Exception {
+		MvcResult objMvcResult = mockMvc
+				.perform(get(URI_ACC + URI_ACC_PRIMARY).with(user(enumUserType.getUserName()).password(enumUserType.getPWD()))
+//								.contentType(MediaType.APPLICATION_JSON)
+						)
+				.andExpect(model().attributeExists("primaryAccount"))
+				.andExpect(view().name("primaryAccount"))
+				.andReturn();
+		PrimaryAccount primaryAccount = (PrimaryAccount) objMvcResult.getModelAndView().getModel().get("primaryAccount");
+		return primaryAccount;
+	}
+}
+</pre>
+
+**1.4. Add Savings Account Feature File**
+
+``src/test/resources/features/SavingsAccountActivities.feature``{{open}}
+
+<pre class="file" data-filename="src/test/resources/features/SavingsAccountActivities.feature" data-target="replace">
+Feature: Check of money deposited can be withdrawn from Savings account in all possible cases
+
+@Regression
+Scenario Outline: Check if the money that is deposited money can be withdrawn from SavingsAccount in general cases
+	Given Common user logged in for Savings Account
+	And Initial balance in Savings account is &lt;InitialBalance&gt;
+	When Deposit money of &lt;DepositAmount&gt; dollars in SavingsAccount
+	And Withdraw money of &lt;WithdrawAmount&gt; dollars from SavingsAccount
+	Then Check remaining amount &lt;RemainingAmount&gt; dollars in SavingsAccount
+
+	Examples:
+		|InitialBalance|DepositAmount|WithdrawAmount|RemainingAmount|
+		|4250.00       |1000         |500           |4750.00        |
+		|4750.00       |1000000      |0             |1004750.00     |
+		|1004750.00    |1000         |5000          |1000750.00     |
+		|1000750.00    |0            |1000750.00    |0.00           |
+
+@Regression
+Scenario Outline: Check if overdraft is possible in SavingsAccount
+	Given Common user logged in for Savings Account
+	And Initial balance in Savings account is &lt;InitialBalance&gt;
+	And Withdraw money of &lt;WithdrawAmount&gt; dollars from SavingsAccount
+	Then Check remaining amount &lt;RemainingAmount&gt; dollars in SavingsAccount
+
+	Examples:
+		|InitialBalance|WithdrawAmount|RemainingAmount|
+		|0.00          |500           |-500.00        |
+
+@Regression
+Scenario Outline: Check if large amounts of money can be deposited in SavingsAccount
+	Given Common user logged in for Savings Account
+	And Initial balance in Savings account is &lt;InitialBalance&gt;
+	When Deposit money of &lt;DepositAmount&gt; dollars in SavingsAccount
+	Then Check remaining amount &lt;RemainingAmount&gt; dollars in SavingsAccount
+	And Check if transaction count of SavingsAccount is greater than 0
+	And Withdraw money of &lt;WithdrawAmount&gt; dollars from SavingsAccount
+
+	Examples:
+		|InitialBalance|DepositAmount   |RemainingAmount    |WithdrawAmount     |
+		|-500.00       |1000            |500.00             |0.00               |
+		|500.00        |1000000000000000|1000000000000500.00|1000000000000500.00|
+</pre>
+
+**1.5. Add Savings Account StepDefinition File**
+
+``src/test/java/in/ravikalla/onlineacc/stepdef/DepositCheckSavAccStep.java``{{open}}
+
+<pre class="file" data-filename="src/test/java/in/ravikalla/onlineacc/stepdef/DepositCheckSavAccStep.java" data-target="replace">
+package in.ravikalla.onlineacc.stepdef;
+
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.user;
+import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.model;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.view;
+
+import java.io.IOException;
+import java.util.List;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.junit.Assert;
+import org.mockito.MockitoAnnotations;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.test.IntegrationTest;
+import org.springframework.boot.test.SpringApplicationContextLoader;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.TestPropertySource;
+import org.springframework.test.context.web.WebAppConfiguration;
+import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.MvcResult;
+import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+import org.springframework.web.context.WebApplicationContext;
+
+import com.jayway.restassured.RestAssured;
+
+import cucumber.api.java.Before;
+import cucumber.api.java8.En;
+import in.ravikalla.onlineacc.StartApplication;
+import in.ravikalla.onlineacc.domain.SavingsAccount;
+import in.ravikalla.onlineacc.domain.SavingsTransaction;
+import in.ravikalla.onlineacc.utils.UserType;
+
+import static in.ravikalla.onlineacc.util.AppConstants.*;
+
+@SuppressWarnings("deprecation")
+@ContextConfiguration(classes = { StartApplication.class }, loader = SpringApplicationContextLoader.class)
+@WebAppConfiguration
+@IntegrationTest("server.port:0")
+@TestPropertySource("/application.yml")
+public class DepositCheckSavAccStep implements En {
+
+	@Autowired
+	WebApplicationContext context;
+
+	MockMvc mockMvc;
+
+	private static final Logger L = LogManager.getLogger(DepositCheckSavAccStep.class);
+
+	@Value("${local.server.port}")
+	private int port;
+
+	// Start : Global variables used while testing
+	private UserType enumUserType = null;
+	// End : Global variables used while testing
+
+	@Before
+	public void setup() throws IOException {
+		L.debug("Start : DepositCheckSavAccStep.setUp()");
+
+		MockitoAnnotations.initMocks(this);
+		RestAssured.port = port;
+
+		enumUserType = UserType.COMMON;
+
+		mockMvc = MockMvcBuilders.webAppContextSetup(context).apply(springSecurity()).build();
+		L.debug("End : DepositCheckSavAccStep.setUp()");
+	}
+
+	public DepositCheckSavAccStep() {
+		Given("^Common user logged in for Savings Account$", () -&gt; {
+			L.debug("Start : User logged in");
+
+			enumUserType = UserType.COMMON;
+
+			L.debug("End : User logged in");
+		});
+
+		And("^Initial balance in Savings account is ([^\"]*)$", (String strInitialBalance) -&gt; {
+			L.debug("Start : Intial balance match");
+
+			try {
+				SavingsAccount objSavingsAccount = getSavingsAccountDetails();
+
+				L.debug("90 : Actual AccountBalance = {}, Expected = {}", objSavingsAccount.getAccountBalance().toPlainString(), strInitialBalance);
+				Assert.assertEquals("Account Balance should match", strInitialBalance, objSavingsAccount.getAccountBalance().toPlainString());
+			} catch (Exception e) {
+				Assert.fail("132 : Couldnt check the initial balance : " + e);
+			}
+
+			L.debug("End : Intial balance match");
+		});
+		When("^Deposit money of ([^\"]*) dollars in SavingsAccount$", (String strDepositMoney) -&gt; {
+			L.debug("Start : Deposit money");
+			try {
+				mockMvc.perform(post(URI_ACC + URI_DEPOSIT).param("amount", strDepositMoney).param("accountType", "Savings")
+						.with(user(enumUserType.getUserName()).password(enumUserType.getPWD())))
+					.andExpect(status().is3xxRedirection());
+			} catch (Exception e) {
+				Assert.fail("143 : Deposit Money : " + e);
+			}
+			L.debug("End : Deposit money");
+		});
+		And("^Withdraw money of ([^\"]*) dollars from SavingsAccount$", (String strWithdrawMoney) -&gt; {
+			L.debug("Start : Withdraw money");
+			try {
+				mockMvc.perform(post(URI_ACC + URI_WITHDRAW).param("amount", strWithdrawMoney).param("accountType", "Savings")
+						.with(user(enumUserType.getUserName()).password(enumUserType.getPWD()))).andExpect(status().is3xxRedirection());
+			} catch (Exception e) {
+				Assert.fail("153 : Withdraw Money : " + e);
+			}
+			L.debug("End : Withdraw money");
+		});
+		And("^Check remaining amount ([^\"]*) dollars in SavingsAccount$", (String strRemainingAmount) -&gt; {
+			L.debug("Start : Remaining balance match");
+			try {
+				SavingsAccount objSavingsAccount = getSavingsAccountDetails();
+				Assert.assertEquals("Account Balance should match", strRemainingAmount, objSavingsAccount.getAccountBalance().toPlainString());
+			} catch (Exception e) {
+				Assert.fail("132 : Couldnt check the initial balance : " + e);
+			}
+			L.debug("End : Remaining balance match");
+		});
+		And("^Check if transaction count of SavingsAccount is greater than 0$", () -&gt; {
+			L.debug("Start : Remaining balance match");
+			try {
+				List&lt;SavingsTransaction&gt; savingsTransactionList = getSavingsTransactionsDetails();
+
+				Assert.assertNotNull("Transactions cant be null", savingsTransactionList);
+				Assert.assertNotNull("Transactions size should be greated than 0", savingsTransactionList.size() &gt; 0);
+				L.debug("Savings Transations size = " + savingsTransactionList.size());
+//				Assert.assertEquals("Account Balance should match", strRemainingAmount, objSavingsAccount.getAccountBalance().toPlainString());
+			} catch (Exception e) {
+				Assert.fail("132 : Couldnt check the initial balance : " + e);
+			}
+			L.debug("End : Remaining balance match");
+		});
+	}
+
+	private SavingsAccount getSavingsAccountDetails() throws Exception {
+		MvcResult objMvcResult = mockMvc
+				.perform(get(URI_ACC + URI_ACC_SAVINGS).with(user(enumUserType.getUserName()).password(enumUserType.getPWD()))
+//								.contentType(MediaType.APPLICATION_JSON)
+						)
+				.andExpect(model().attributeExists("savingsAccount"))
+				.andExpect(view().name("savingsAccount"))
+				.andReturn();
+		SavingsAccount objSavingsAccount = (SavingsAccount) objMvcResult.getModelAndView().getModel().get("savingsAccount");
+		return objSavingsAccount;
+	}
+	private List&lt;SavingsTransaction&gt; getSavingsTransactionsDetails() throws Exception {
+		MvcResult objMvcResult = mockMvc
+				.perform(get(URI_ACC + URI_ACC_SAVINGS).with(user(enumUserType.getUserName()).password(enumUserType.getPWD()))
+//								.contentType(MediaType.APPLICATION_JSON)
+						)
+				.andExpect(model().attributeExists("savingsTransactionList"))
+				.andExpect(view().name("savingsAccount"))
+				.andReturn();
+		List&lt;SavingsTransaction&gt; savingsTransactionList = (List&lt;SavingsTransaction&gt;) objMvcResult.getModelAndView().getModel().get("savingsTransactionList");
+		return savingsTransactionList;
+	}
+}
+</pre>
+
+**1.6. Add Transfer Actifities Feature File**
+
+``src/test/resources/features/TransferActivities.feature``{{open}}
+
+<pre class="file" data-filename="src/test/resources/features/TransferActivities.feature" data-target="replace">
+Feature: Check account transfer activities between own accounts
+
+@Regression
+Scenario Outline: Check if the money can be transferred from Checkings account to Savings account
+	Given Common user logged in for account transfer
+	And Initial balance in Savings account is &lt;InitialSavingsBalance&gt;
+	And Initial balance in Checkings account is &lt;InitialCheckingsBalance&gt;
+	When Deposit money of &lt;SavingsDeposit&gt; dollars in SavingsAccount
+	And Transfer money of &lt;TransferAmount&gt; from Savings to Checkings account
+	Then Check remaining amount &lt;RemainingSavingsBalance&gt; dollars in SavingsAccount
+	And Check remaining amount &lt;RemainingCheckingsBalance&gt; dollars in CheckingsAccount
+
+	Examples:
+		|InitialSavingsBalance|InitialCheckingsBalance|SavingsDeposit|TransferAmount|RemainingSavingsBalance|RemainingCheckingsBalance|
+		|0.00                 |0.00                   |1000           |500          |500.00                 |500.00                     |
+</pre>
+
+**1.7. Add Transfer Activities StepDefinition File**
+
+``src/test/java/in/ravikalla/onlineacc/stepdef/TransferActivitiesStep.java``{{open}}
+
+<pre class="file" data-filename="src/test/java/in/ravikalla/onlineacc/stepdef/TransferActivitiesStep.java" data-target="replace">
+package in.ravikalla.onlineacc.stepdef;
+
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.user;
+import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.model;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.view;
+
+import java.io.IOException;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.junit.Assert;
+import org.mockito.MockitoAnnotations;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.test.IntegrationTest;
+import org.springframework.boot.test.SpringApplicationContextLoader;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.TestPropertySource;
+import org.springframework.test.context.web.WebAppConfiguration;
+import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.MvcResult;
+import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+import org.springframework.web.context.WebApplicationContext;
+
+import com.jayway.restassured.RestAssured;
+
+import cucumber.api.java.Before;
+import cucumber.api.java8.En;
+import in.ravikalla.onlineacc.StartApplication;
+import in.ravikalla.onlineacc.domain.PrimaryAccount;
+import in.ravikalla.onlineacc.utils.UserType;
+
+import static in.ravikalla.onlineacc.util.AppConstants.*;
+
+@SuppressWarnings("deprecation")
+@ContextConfiguration(classes = { StartApplication.class }, loader = SpringApplicationContextLoader.class)
+@WebAppConfiguration
+@IntegrationTest("server.port:0")
+@TestPropertySource("/application.yml")
+public class TransferActivitiesStep implements En {
+
+	@Autowired
+	WebApplicationContext context;
+
+	MockMvc mockMvc;
+
+	private static final Logger L = LogManager.getLogger(TransferActivitiesStep.class);
+
+	@Value("${local.server.port}")
+	private int port;
+
+	// Start : Global variables used while testing
+	private UserType enumUserType = null;
+	// End : Global variables used while testing
+
+	@Before
+	public void setup() throws IOException {
+		L.debug("Start : TransferActivitiesStep.setUp()");
+
+		MockitoAnnotations.initMocks(this);
+		RestAssured.port = port;
+
+		mockMvc = MockMvcBuilders.webAppContextSetup(context).apply(springSecurity()).build();
+		L.debug("End : TransferActivitiesStep.setUp()");
+	}
+
+	public TransferActivitiesStep() {
+
+		Given("^Common user logged in for account transfer$", () -&gt; {
+			L.debug("Start : User logged in");
+
+			enumUserType = UserType.COMMON;
+
+			L.debug("End : User logged in");
+		});
+		When("^Transfer money of ([^\"]*) from Savings to Checkings account$", (String strTransferAmount) -&gt; {
+			L.debug("Start : Amount transfer from Savings to Checkings");
+			try {
+				mockMvc
+						.perform(post(URI_TRANSFER + URI_TRANSFER_BETWEEN_ACCOUNTS)
+								.with(user(enumUserType.getUserName()).password(enumUserType.getPWD()))
+								.param("transferFrom", "Savings")
+								.param("transferTo", "Primary")
+								.param("amount", strTransferAmount)
+								)
+						.andExpect(status().is3xxRedirection());
+			} catch (Exception e) {
+				Assert.fail("132 : Couldnt transfer money from Savings to Checkings account : " + e);
+			}
+			L.debug("End : Amount transfer from Savings to Checkings");
+		});
+	}
+}
+</pre>
+
+**1.8. Add User Registration Feature File**
+
+``src/test/resources/features/UserRegistration.feature``{{open}}
+
+<pre class="file" data-filename="src/test/resources/features/UserRegistration.feature" data-target="replace">
+Feature: Check if new users can be registered
+
+@Regression
+Scenario Outline: Simple user registration
+	Given User registered with details &lt;firstName&gt;, &lt;lastName&gt;, &lt;phone&gt;, &lt;email&gt;, &lt;username&gt; and &lt;password&gt;
+	When User logged in after registration with &lt;username&gt; and &lt;password&gt; 
+	Then Check if user details &lt;firstName&gt;, &lt;lastName&gt;, &lt;phone&gt;, &lt;email&gt;, &lt;username&gt; and &lt;password&gt; are properly stored in DB
+
+	Examples:
+		|firstName|lastName|phone     |email        |username|password|
+		|Ravi     |Kalla   |1111111111|ravi@ravi.com|ravi    |ravi    |
+		|Raj      |Kumar   |2222222222|raj@raj.com  |Raj     |Raj     |
+		|Matt     |Damon   |3333333333|matt@matt.com|Matt    |Matt    |
+</pre>
+**1.9. Add User Registration StepDefinition File**
+
+``src/test/java/in/ravikalla/onlineacc/stepdef/UserRegistrationStep.java``{{open}}
+
+<pre class="file" data-filename="src/test/java/in/ravikalla/onlineacc/stepdef/UserRegistrationStep.java" data-target="replace">
+package in.ravikalla.onlineacc.stepdef;
+
+import static in.ravikalla.onlineacc.util.AppConstants.URI_ACC;
+import static in.ravikalla.onlineacc.util.AppConstants.URI_DEPOSIT;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.user;
+import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.model;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.view;
+
+import java.io.IOException;
+import java.util.List;
+
+import org.apache.commons.codec.language.bm.PhoneticEngine;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.junit.Assert;
+import org.mockito.MockitoAnnotations;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.test.IntegrationTest;
+import org.springframework.boot.test.SpringApplicationContextLoader;
+import org.springframework.http.MediaType;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.TestPropertySource;
+import org.springframework.test.context.web.WebAppConfiguration;
+import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.MvcResult;
+import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+import org.springframework.web.context.WebApplicationContext;
+
+import com.jayway.restassured.RestAssured;
+
+import cucumber.api.DataTable;
+import cucumber.api.java.Before;
+import cucumber.api.java8.En;
+import in.ravikalla.onlineacc.StartApplication;
+import in.ravikalla.onlineacc.domain.SavingsAccount;
+import in.ravikalla.onlineacc.domain.User;
+import in.ravikalla.onlineacc.util.AppConstants;
+import in.ravikalla.onlineacc.utils.TestUtils;
+import in.ravikalla.onlineacc.utils.UserType;
+
+import static in.ravikalla.onlineacc.util.AppConstants.*;
+
+@SuppressWarnings("deprecation")
+@ContextConfiguration(classes = { StartApplication.class }, loader = SpringApplicationContextLoader.class)
+@WebAppConfiguration
+@IntegrationTest("server.port:0")
+@TestPropertySource("/application.yml")
+public class UserRegistrationStep implements En {
+
+	@Autowired
+	WebApplicationContext context;
+
+	MockMvc mockMvc;
+
+	private static final Logger L = LogManager.getLogger(UserRegistrationStep.class);
+
+	@Value("${local.server.port}")
+	private int port;
+
+	// Start : Global variables used while testing
+	private String username = null;
+	private String password = null;
+	// End : Global variables used while testing
+
+	@Before
+	public void setup() throws IOException {
+		L.debug("Start : UserRegistration.setUp()");
+
+		MockitoAnnotations.initMocks(this);
+		RestAssured.port = port;
+
+		mockMvc = MockMvcBuilders.webAppContextSetup(context).apply(springSecurity()).build();
+		L.debug("End : UserRegistration.setUp()");
+	}
+
+	public UserRegistrationStep() {
+		Given("^User logged in after registration with ([^\"]*) and ([^\"]*)$",
+				(String username, String password) -&gt; {
+			L.debug("Start : User logged in");
+			this.username = username;
+			this.password = password;
+
+			L.debug("End : User logged in");
+		});
+		Then("^User registered with details ([^\"]*), ([^\"]*), ([^\"]*), ([^\"]*), ([^\"]*) and ([^\"]*)$",
+				(String firstName, String lastName, String phone, String email, String username, String password) -&gt; {
+			L.debug("Start : Register users");
+
+			User objUser = new User();
+			objUser.setFirstName(firstName);
+			objUser.setLastName(lastName);
+			objUser.setPhone(phone);
+			objUser.setEmail(email);
+			objUser.setUsername(username);
+			objUser.setPassword(password);
+
+			try {
+				objUser.setEnabled(true);
+				String strUserJSON = TestUtils.objectToJson(objUser);
+				mockMvc.perform(post(HOME_SIGNUP)
+						.content(strUserJSON)
+//							.param("user", strUserJSON)
+						.flashAttr("user", objUser)
+//							.with(user(enumUserType.getUserName()).password(enumUserType.getPWD()))
+//							.contentType(MediaType.APPLICATION_JSON)
+						)
+//							.andExpect(status().is3xxRedirection())
+						;
+			} catch (Exception e) {
+				Assert.fail("87 : Couldnt Register the user : " + e);
+			}
+
+			L.debug("End : Register users");
+		});
+		Then("^Check if user details ([^\"]*), ([^\"]*), ([^\"]*), ([^\"]*), ([^\"]*) and ([^\"]*) are properly stored in DB$",
+				(String firstName, String lastName, String phone, String email, String username, String password) -&gt; {
+			L.debug("Start : Check users");
+
+			try {
+				MvcResult objMvcResult = mockMvc.perform(get(URI_USER + URI_USER_PROFILE)
+						.with(user(username).password(password)))
+					.andExpect(model().attributeExists("user"))
+					.andReturn();
+				User objUserFromDB = (User) objMvcResult.getModelAndView().getModel().get("user");
+
+				Assert.assertNotNull("User shouldnt be null", objUserFromDB);
+				Assert.assertNotNull("UserID shouldnt be null", objUserFromDB.getUserId());
+				Assert.assertEquals("UserName should be same", username, objUserFromDB.getUsername());
+				Assert.assertEquals("FirstName should be same", firstName, objUserFromDB.getFirstName());
+				Assert.assertEquals("LastName should be same", lastName, objUserFromDB.getLastName());
+				Assert.assertEquals("PhoneNumber should be same", phone, objUserFromDB.getPhone());
+				Assert.assertEquals("Email should be same", email, objUserFromDB.getEmail());
+			} catch (Exception e) {
+				Assert.fail("129 : Couldnt Check the user : " + e);
+			}
+
+			L.debug("End : Check users");
+		});
+	}
+}
+</pre>
 **2. Test**
 
 Execute tests
