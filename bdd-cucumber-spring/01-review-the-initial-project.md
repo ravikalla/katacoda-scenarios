@@ -39,7 +39,7 @@ To add Spring JMS to our project all we have to do is to add the following line 
 		&lt;/dependency&gt;
 </pre>
 
-**1.1. Add BDD Dependencies**
+**1.1. BDD Runner Class**
 
 ``src/test/java/in/ravikalla/onlineacc/BDDTest.java``{{open}}
 
@@ -116,6 +116,54 @@ public class BDDTest {
         Reporter.setTestRunnerOutput("Sample test runner output message");
     }
 }
+</pre>
+
+**1.2. Add Checkings Account Feature File**
+
+``src/test/resources/features/CheckingsAccountActivities1.feature``{{open}}
+
+<pre class="file" data-filename="src/test/resources/features/CheckingsAccountActivities1.feature" data-target="replace">
+Feature: Check money deposited can be withdrawn from Checkings account in all possible cases
+
+@Regression
+Scenario Outline: Check if the money deposited can be withdrawn from CheckingsAccount in all positive scenarios
+	Given Common user logged in
+	And Initial balance in Checkings account is &lt;InitialBalance&gt;
+	When Deposit money of &lt;DepositAmount&gt; dollars in CheckingsAccount
+	And Withdraw money of &lt;WithdrawAmount&gt; dollars from CheckingsAccount
+	Then Check remaining amount &lt;RemainingAmount&gt; dollars in CheckingsAccount
+
+	Examples:
+		|InitialBalance|DepositAmount|WithdrawAmount|RemainingAmount|
+		|1700.00       |1000         |500           |2200.00        |
+		|2200.00       |1000000      |0             |1002200.00     |
+		|1002200.00    |1000         |5000          |998200.00      |
+		|998200.00     |0            |998200.00     |0.00           |
+
+@Regression
+Scenario Outline: Check if overdraft is possible in CheckingsAccount
+	Given Common user logged in
+	And Initial balance in Checkings account is &lt;InitialBalance&gt;
+	And Withdraw money of &lt;WithdrawAmount&gt; dollars from CheckingsAccount
+	Then Check remaining amount &lt;RemainingAmount&gt; dollars in CheckingsAccount
+
+	Examples:
+		|InitialBalance|WithdrawAmount|RemainingAmount|
+		|0.00          |500           |-500.00        |
+
+@Regression
+Scenario Outline: Check if huge amounts of money can be deposited and withdrawn in CheckingsAccount
+	Given Common user logged in
+	And Initial balance in Checkings account is &lt;InitialBalance&gt;
+	When Deposit money of &lt;DepositAmount&gt; dollars in CheckingsAccount
+	Then Check remaining amount &lt;RemainingAmount&gt; dollars in CheckingsAccount
+	And Withdraw money of &lt;WithdrawAmount&gt; dollars from CheckingsAccount
+
+	Examples:
+		|InitialBalance|DepositAmount   |RemainingAmount    |WithdrawAmount     |
+		|-500.00       |1000            |500.00             |0.00               |
+		|500.00        |1000000000000000|1000000000000500.00|1000000000000500.00|
+
 </pre>
 
 **2. Test**
