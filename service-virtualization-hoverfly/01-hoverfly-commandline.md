@@ -45,7 +45,12 @@ Set Hoverfly to simulate mode -
 ``./hoverctl mode simulate``{{execute}}
 <br/><br/>
 Make the same request again to see the same data as before -
+<br/><br/>
+See same response from Time webservice -
 <br/>
 ``curl --proxy http://localhost:8500 http://time.jsontest.com``{{execute}}
+<br/>
+<br/>
+See same response from another webservice -
 <br/>
 ``curl --proxy http://localhost:8500 http://jsonplaceholder.typicode.com/todos/1``{{execute}}
