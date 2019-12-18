@@ -50,6 +50,6 @@ Execute tests
 ``mvn test``{{execute}}
 <br/><br/>
 Host reports on server to view
-``cp /root/projects/online-account/target/extent-report.html /var/www/html/index.html``{{execute}}
+``cp /root/projects/virtualization-katacoda/online-account/target/extent-report.html /var/www/html/index.html``{{execute}}
 <br/>
 View test report: https://[[HOST_SUBDOMAIN]]-80-[[KATACODA_HOST]].environments.katacoda.com/
