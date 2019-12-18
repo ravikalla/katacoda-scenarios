@@ -14,13 +14,13 @@ Download support project that has webservices that should be virtualized -
 Build the application -
 <br/>
 ``cd onlineaccount-external-virtualization-site``{{execute}}
-<br/>
+<br/><br/>
 ``mvn clean install``{{execute}}
 <br/><br/>
 Start the application -
 <br/>
 ``cd target``{{execute}}
-<br/>
+<br/><br/>
 ``java -jar ExternalAudit-0.0.1-SNAPSHOT.jar &``{{execute}}
 <br/><br/>
 Support project URLs -
