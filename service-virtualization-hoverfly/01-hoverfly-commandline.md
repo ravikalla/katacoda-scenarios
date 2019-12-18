@@ -37,7 +37,7 @@ Admin screen URL - https://[[HOST_SUBDOMAIN]]-8888-[[KATACODA_HOST]].environment
 
 Export simulation to a JSON file
 <br/>
-``hoverctl export simulation.json``{{execute}}
+``./hoverctl export simulation.json``{{execute}}
 
 **5. Simulate**
 Set Hoverfly to simulate mode -
