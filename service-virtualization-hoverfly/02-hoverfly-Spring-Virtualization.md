@@ -37,6 +37,8 @@ Hoverfly is configured in this Bank Application written in Spring
 Got to previous folder - ``cd ..``{{execute}}
 <br/>
 Download Bank Application - ``git clone https://github.com/ravikalla/online-account``{{execute}}
+<br/>
+Go to application folder - ``cd online-account``{{execute}}
 
 **3. Build Bank Application**
 
