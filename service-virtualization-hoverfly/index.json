@@ -1,0 +1,35 @@
+{ 
+  "pathwayTitle": "Service Virtualization - Hoverfly",
+  "title": "Service Virtualization - Hoverfly",
+  "description": "In this scenario you will learn about Service virtualization and how to install and use it",
+  "difficulty": "beginner",
+  "time": "10 minutes",
+  "details": {
+    "steps": [
+      { "title": "Step 1", "text": "01-hoverfly-commandline.md" }
+    ],
+    "intro": {
+      "text": "00-intro.md",
+      "courseData": "env-init.sh",
+      "code": "set-env.sh"
+    },
+    "finish": {
+      "text": "99-outro.md"
+    }
+  },
+  "files": [
+
+  ],
+  "environment": {
+    "showdashboard": true,
+    "dashboards": [{"name":"HoverflyAdmin","port":8888}, {"name":"HoverflyProxy","port":80}],
+    "uilayout": "editor-terminal",
+    "uisettings": "java",
+    "hideintro": false,
+    "uieditorpath": "/root/projects/virtualization-katacoda",
+    "uimessage1": "\u001b[32mYour Interactive Bash Terminal. A safe place to learn and execute commands.\u001b[m\r\n"
+  },
+  "backend": {
+    "imageid": "ubuntu"
+  }
+}
