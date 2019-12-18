@@ -29,7 +29,7 @@ Capture response from another webservice -
 <br/>
 ``curl --proxy http://localhost:8500 http://jsonplaceholder.typicode.com/todos/1``{{execute}}
 <br/><br/>
-Admin screen URL - https://[[HOST_SUBDOMAIN]]-8888-[[KATACODA_HOST]].environments.katacoda.com/
+Admin screen URL - https://[[HOST_SUBDOMAIN]]-8888-[[KATACODA_HOST]].environments.katacoda.com/dashboard
 
 **4. Export**
 
