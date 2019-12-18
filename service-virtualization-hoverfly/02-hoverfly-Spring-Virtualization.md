@@ -15,6 +15,10 @@ Build the application -
 <br/>
 ``cd onlineaccount-external-virtualization-site``{{execute}}
 <br/><br/>
+Set JAVA_HOME -
+<br/>
+``export JAVA_HOME=/usr/lib/jvm/java-8-openjdk-amd64/jre``{{execute}}
+<br/><br/>
 ``mvn clean install``{{execute}}
 <br/><br/>
 Start the application -
