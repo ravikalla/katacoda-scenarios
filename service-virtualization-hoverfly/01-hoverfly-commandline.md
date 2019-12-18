@@ -1,7 +1,5 @@
 # Use Hoverfly from command line
 
-For your convenience, this scenario has been created with a base project using the Java programming language and the Apache Maven build tool.
-
 **1. Install**
 
 Download Hoverfly installation file
