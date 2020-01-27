@@ -24,4 +24,4 @@ ssh root@host01 cd .. && \
 ssh root@host01 docker build -t ravikalla/jenkins-maven-docker:v0.1 .
 
 # Jenkins Run
-docker run --detach -v /var/run/docker.sock:/var/run/docker.sock -v $(which docker):$(which docker) -p 9080:8080 -p 50000:50000 -v /jenkins_bkp/jenkins_home:/var/jenkins_home --name jenkinsfordevops ravikalla/jenkins-maven-docker:v0.1
+ssh root@host01 docker run --detach -v /var/run/docker.sock:/var/run/docker.sock -v $(which docker):$(which docker) -p 9080:8080 -p 50000:50000 -v /jenkins_bkp/jenkins_home:/var/jenkins_home --name jenkinsfordevops ravikalla/jenkins-maven-docker:v0.1
