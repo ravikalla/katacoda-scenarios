@@ -26,11 +26,11 @@
   ],
   "environment": {
     "showdashboard": true,
-    "dashboards": [{"name":"Jenkins","port":9080}, {"name":"BankApplication","port":8800}, {"name":"Sonar","port":9000}],
+    "dashboards": [{"name":"Sonar","port":9000}, {"name":"Jenkins","port":9080}, {"name":"BankApplication","port":8800}],
     "uilayout": "editor-terminal",
     "uisettings": "java",
     "hideintro": false,
-    "uieditorpath": "/root/projects/bdd-cucumber-spring-katacoda",
+    "uieditorpath": "/root/projects/online-account",
     "uimessage1": "\u001b[32mYour Interactive Bash Terminal. A safe place to learn and execute commands.\u001b[m\r\n"
   },
   "backend": {
