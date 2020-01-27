@@ -19,7 +19,7 @@ docker build -t ravikalla/jenkins-maven-docker:v0.1 .
 docker run --detach -v /var/run/docker.sock:/var/run/docker.sock -v $(which docker):$(which docker) -p 9080:8080 -p 50000:50000 -v /jenkins_bkp/jenkins_home:/var/jenkins_home --name jenkinsfordevops ravikalla/jenkins-maven-docker:v0.1
 
 # Install NGINX
-sudo apt update
+#sudo apt update
 sudo apt --yes --force-yes install nginx
 
 clear scr
