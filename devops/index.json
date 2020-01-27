@@ -1,6 +1,6 @@
 { 
   "pathwayTitle": "DevOps",
-  "title": "DevOps setup for a basic Spring application",
+  "title": "SelfService DevOps Platform Demo",
   "description": "In this scenario you will learn more about DevOps platform and how to integrate it with Spring Boot application",
   "difficulty": "intermediate",
   "time": "30 minutes",
