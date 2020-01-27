@@ -3,6 +3,9 @@ cd /root/projects/
 git clone https://github.com/ravikalla/online-account.git
 cd /root/projects/online-account/
 
+# Sonar Installation
+docker run -d --name sonarqube -p 9000:9000 sonarqube
+
 # Jenkins Build
 cd /root/projects
 sudo chmod 777 /var/run/docker.sock
