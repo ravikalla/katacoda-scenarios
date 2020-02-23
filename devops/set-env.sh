@@ -1,7 +1,7 @@
 #!/bin/bash
 cd /root/projects/
 
-docker run -d --name gitjavacreate -p 8055:8055 ravikalla/create-github-defect
+docker run -d --name gitjavacreate -p 8055:8055 ravikalla/devops-selfservice
 
 cd /root/projects/
 git clone https://github.com/ravikalla/online-account.git
@@ -28,7 +28,7 @@ docker run --detach -v /var/run/docker.sock:/var/run/docker.sock -v $(which dock
 docker network create --driver bridge jenkinssonarbridge
 docker network connect jenkinssonarbridge jenkinsfordevops
 docker network connect jenkinssonarbridge sonarqube
-https://github.com/ravikalla/create-github-defect.git
+https://github.com/ravikalla/devops-selfservice.git
 # Install NGINX
 #sudo apt update
 sudo apt --yes --force-yes install nginx
