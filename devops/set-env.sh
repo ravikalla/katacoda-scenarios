@@ -4,8 +4,8 @@ cd /root/projects/
 docker run -d --name gitjavacreate -p 8055:8055 ravikalla/devops-selfservice
 
 cd /root/projects/
-git clone https://github.com/ravikalla/online-account.git
-cd /root/projects/online-account/
+#git clone https://github.com/ravikalla/online-account.git
+#cd /root/projects/online-account/
 
 # Sonar Installation
 docker run -d --name sonarqube -p 9000:9000 sonarqube
@@ -15,8 +15,8 @@ cd /root/projects
 sudo chmod 777 /var/run/docker.sock
 mkdir -p /jenkins_bkp/jenkins_home
 chmod -R 777 /jenkins_bkp
-git clone https://github.com/ravikalla/online-account.git
-cd online-account
+git clone https://github.com/ravikalla/devops-selfservice.git
+cd devops-selfservice
 git checkout master
 cp Dockerfile-Jenkins-Maven ../Dockerfile
 cd ..
@@ -28,7 +28,7 @@ docker run --detach -v /var/run/docker.sock:/var/run/docker.sock -v $(which dock
 docker network create --driver bridge jenkinssonarbridge
 docker network connect jenkinssonarbridge jenkinsfordevops
 docker network connect jenkinssonarbridge sonarqube
-https://github.com/ravikalla/devops-selfservice.git
+
 # Install NGINX
 #sudo apt update
 sudo apt --yes --force-yes install nginx
