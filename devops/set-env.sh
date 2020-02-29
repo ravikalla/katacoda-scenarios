@@ -31,7 +31,7 @@ docker network connect jenkinssonarbridge sonarqube
 
 # Install NGINX
 #sudo apt update
-sudo apt --yes --force-yes install nginx
+#sudo apt --yes --force-yes install nginx
 
 clear scr
 #~/.launch.sh
