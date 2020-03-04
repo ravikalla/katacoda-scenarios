@@ -1,7 +1,9 @@
-In this scenario you learned about DevOps and how it can be used to create CI/CD pipelines for applications. We will add additional scenarios that explain more how to build SelfServicePortal shortly, so check back to [katacoda.com/ravi_kalla](https://www.katacoda.com/ravi_kalla)
-
-To summarize: TODO
+In this scenario you learned about DevOps and how it can be used to create CI/CD pipelines for applications
 
 ## Additional Resources
-
-TODO
+ * [Jenkins Tutorial](https://jenkins.io/doc/tutorials/)
+ * [sonarqube](https://hub.docker.com/_/sonarqube)
+ * [Artifactory](https://jfrog.com/integration/bintray-docker-hub/)
+ * [ZAP](https://www.zaproxy.org/)
+ * [Aqua](https://github.com/aquasecurity/microscanner#aqua-security-edition-comparison)
+ * [snyk](https://snyk.io/)
