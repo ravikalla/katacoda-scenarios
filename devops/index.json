@@ -26,7 +26,7 @@
   ],
   "environment": {
     "showdashboard": true,
-    "dashboards": [{"name":"Sonar","port":9000}, {"name":"Jenkins","port":9080}, {"name":"GitRepoCreationApp","port":8055}, {"name":"BankApplication","port":8800}],
+    "dashboards": [{"name":"DevOpsSelfServiceApp","port":8055}, {"name":"Jenkins","port":9080}, {"name":"Sonar","port":9000}, {"name":"BankApplication","port":8800}],
     "uilayout": "editor-terminal",
     "uisettings": "java",
     "hideintro": false,
